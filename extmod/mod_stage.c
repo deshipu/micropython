@@ -360,6 +360,11 @@ STATIC mp_obj_t stage_render(size_t n_args, const mp_obj_t *args) {
     size_t buffer_size = bufinfo.len / 2; // 16-bit indexing
 
     mp_obj_t spi = args[6];
+    // TODO: Make sure it's an SPI object.
+    mp_obj_type_t *type = mp_obj_get_type(spi);
+    if (type->protocol == NULL) {
+         mp_raise_ValueError("SPI protocol required");
+    }
 
     render_stage(x0, y0, x1, y1, layers, layers_size, buffer, buffer_size, spi);
 
