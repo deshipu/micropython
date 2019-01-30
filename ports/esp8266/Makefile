@@ -94,6 +94,7 @@ SRC_C = \
 EXTMOD_SRC_C = $(addprefix extmod/,\
 	modlwip.c \
 	modonewire.c \
+	mod_stage.c \
         )
 
 LIB_SRC_C = $(addprefix lib/,\
