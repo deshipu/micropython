@@ -1,10 +1,8 @@
 import ustruct
-import time
+import utime
 
 
 class ST7735R:
-    """A minimal driver for the 128x128 version of the ST7735 SPI display."""
-
     width = 128
     height = 128
 
@@ -15,7 +13,7 @@ class ST7735R:
         self.cs = cs
         self.cs(0)
         self.rotation = rotation
-        time.sleep(0.1)
+        utime.sleep_ms(100)
         for command, data, delay in (
             (b'\x01', b'', 120),
             (b'\x11', b'', 120),
@@ -40,22 +38,21 @@ class ST7735R:
             (b'\x29', b'', 120),
         ):
             self.write(command, data)
-            time.sleep(delay / 1000)
+            utime.sleep_ms(delay)
         self.dc(0)
         self.cs(1)
 
     def block(self, x0, y0, x1, y1):
-        """Prepare for updating a block of the screen."""
         if self.rotation & 0x01:
-            x0 += 3
-            x1 += 3
-            y0 += 2
-            y1 += 2
+            x0 += 3 # 32 # alternate st7735 display
+            x1 += 3 # 32
+            y0 += 2 # 0
+            y1 += 2 # 0
         else:
-            x0 += 2
-            x1 += 2
-            y0 += 3
-            y1 += 3
+            x0 += 2 # 0
+            x1 += 2 # 0
+            y0 += 3 # 32
+            y1 += 3 # 32
         xpos = ustruct.pack('>HH', x0, x1)
         ypos = ustruct.pack('>HH', y0, y1)
         self.write(b'\x2a', xpos)
@@ -64,8 +61,6 @@ class ST7735R:
         self.dc(1)
 
     def write(self, command=None, data=None):
-        """Send command and/or data to the display."""
-
         if command is not None:
             self.dc(0)
             self.spi.write(command)
@@ -74,8 +69,6 @@ class ST7735R:
             self.spi.write(data)
 
     def clear(self, color=0x00):
-        """Clear the display with the given color."""
-
         self.block(0, 0, self.width - 1, self.height - 1)
         pixel = color.to_bytes(2, 'big')
         data = pixel * 256
@@ -88,4 +81,3 @@ class ST7735R:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.cs(1)
-        pass

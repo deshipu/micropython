@@ -8,10 +8,10 @@ import st7735r
 
 
 K_X = 0x20
-K_DOWN = 0x02
-K_LEFT = 0x04
-K_RIGHT = 0x08
-K_UP = 0x01
+K_DOWN = 0x01
+K_LEFT = 0x08
+K_RIGHT = 0x04
+K_UP = 0x02
 K_O = 0x10
 
 
@@ -35,7 +35,7 @@ class Buttons:
         self._address = address
 
     def get_pressed(self):
-        return self._i2c.readfrom(self._address, 1)[0] ^ 0xff
+        return self._i2c.readfrom(self._address, 1)[0]
 
 
 spi = SPI(1, baudrate=40000000)
